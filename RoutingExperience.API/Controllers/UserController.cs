@@ -23,10 +23,16 @@ namespace RoutingExperience.API.Controllers
             return Ok(_context.Users.ToList());
         }
         
-        [HttpGet("{userId}")]
+        [HttpGet("{userId:int}")]
         public async Task<IActionResult> GetById(int userId)
         {
             return Ok(_context.Users.FirstOrDefault(u => u.UserId == userId));
+        }
+        
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            return Ok(_context.Users.FirstOrDefault(u => u.Email == email));
         }
         
         [HttpPost]
