@@ -63,7 +63,7 @@ namespace RoutingExperience.API.Controllers
             }
 
             // folder for multiple uploaded files
-            var folderName = Path.Combine("Resources", "MultipleUploadedFiles");
+            var folderName = Path.Combine("Resources", "UploadedFiles");
 
             // saved path in physical disk drive
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -116,6 +116,45 @@ namespace RoutingExperience.API.Controllers
 
             // returning ready response
             return Ok(new { response });
+        }
+
+        // download exist file
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadFile(string downloadFileName)
+        {
+            // folderName : database folder in application
+            var folderName = Path.Combine("Resources", "UploadedFiles");
+
+            // pathToSave : physical path in server
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+            // fileName : searching file from database
+            var fileName = downloadFileName;
+
+            // fullPath : checking this path in physical database
+            var fullPath = Path.Combine(pathToSave, fileName);
+
+            // checking this file in database : it is not exist, return BadRequest
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return BadRequest("File is not found in Database!");
+            }
+
+            // if exist it 
+
+            // ready download file 
+
+            // fileBytes : all bytes of download file 
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+
+            // fileContentResult : returning result for user
+            var fileContentResult = new FileContentResult(fileBytes, "application/octet-stream")
+            {
+                FileDownloadName = fileName,
+            };
+
+            // return this file content result
+            return fileContentResult;
         }
     }
 }
