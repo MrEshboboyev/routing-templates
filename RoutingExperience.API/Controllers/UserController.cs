@@ -23,7 +23,7 @@ namespace RoutingExperience.API.Controllers
             return Ok(_context.Users.ToList());
         }
         
-        [HttpGet("{userId:int}")]
+        [HttpGet("{userId:int:min(1)}")]
         public async Task<IActionResult> GetById(int userId)
         {
             return Ok(_context.Users.FirstOrDefault(u => u.UserId == userId));
