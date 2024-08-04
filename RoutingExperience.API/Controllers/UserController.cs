@@ -24,7 +24,7 @@ namespace RoutingExperience.API.Controllers
         }
         
         [HttpGet("{userId:int:min(1)}")]
-        public async Task<IActionResult> GetById(int userId)
+        public async Task<IActionResult> GetById([FromRoute] int userId)
         {
             return Ok(_context.Users.FirstOrDefault(u => u.UserId == userId));
         }
@@ -35,9 +35,58 @@ namespace RoutingExperience.API.Controllers
             return Ok(_context.Users.FirstOrDefault(u => u.Email == email));
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Create(User user)
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] User user)
         {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        [HttpPost("createWithForm")]
+        public async Task<IActionResult> CreateWithForm([FromForm] User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        // this action is not working as expected;
+        // [FromQuery] using Get() methods
+        [HttpPost("createWithQuery")]
+        public async Task<IActionResult> CreateWithQuery([FromQuery] User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        [HttpPost("createWithRoute")]
+        public async Task<IActionResult> CreateWithRoute([FromRoute] User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        [HttpPost("createWithHeader")]
+        public async Task<IActionResult> CreateWithHeader([FromHeader] int userId,
+            [FromHeader] string fullName,
+            [FromHeader] string password,
+            [FromHeader] string email)
+        {
+            var user = new User()
+            {
+                UserId = userId,
+                FullName = fullName,
+                Password = password,
+                Email = email
+            };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
